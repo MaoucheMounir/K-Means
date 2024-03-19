@@ -21,17 +21,13 @@ class KMeans():
         self.clusters:list[Cluster] = None
         self.previous_centroids = None
 
-    def init_centroids(self, K:int, data:np.ndarray):
-        #Initialize centroids
-        np.random.seed(0)
+    def init_centroids(self, K:int, data:np.ndarray) -> np.ndarray:
         centroids_indices = [rd.randint(0, self.nb_echantillons) for i in range(K)]
-        
-        #centroids = np.array([(X[indice, 0], X[indice, 1]) for indice in centroids_indices])
         centroids = np.array([data[indice] for indice in centroids_indices])
         
         return centroids
 
-    def get_nearest_centroid(self, point:np.ndarray):
+    def get_nearest_centroid(self, point:np.ndarray) -> int:
         """calcule la distance euclidienne entre un point et tous les centroids et retourne le centroid argmin
 
         Args:
@@ -47,7 +43,7 @@ class KMeans():
 
         return distances.index(np.min(distances))
 
-    def assign_nearest_centroid(self):
+    def assign_nearest_centroid(self) -> list[tuple]:
         # Assign each data point to its nearest centroid
         points_centroids = []
         
@@ -59,60 +55,45 @@ class KMeans():
         z = list(zip(self.data, points_centroids))
         return z
     
-    """# def assign_nearest_centroid(self):
-    #     # Assign each data point to its nearest centroid
-    #     point_colors = []
-            
-    #     for point in self.data:
-    #         point_colors.append(self.colors[self.get_nearest_centroid(point)])
-            
-    #     z = list(zip(self.x, self.y, point_colors))
-    #     return z"""
-    
-    def create_clusters(self, z):
+    def create_clusters(self, z) -> None:
         df = pd.DataFrame(z, columns=['point', 'cluster'])
-        #print(df)
         groupes = df.groupby('cluster')
 
         self.clusters = [Cluster(df_groupe.iloc[:,0], indice_cluster) for indice_cluster, df_groupe in groupes]
         
-    def update_centroids(self,): #Le calcul du barycentre se fait automatiquement lors de la creation des clusters
+    def update_centroids(self,) -> None: #Le calcul du barycentre se fait automatiquement lors de la creation des clusters
         self.centroids = np.array([cluster.centroid for cluster in self.clusters])
 
-    def step(self,):
+    def step(self,) -> None:
         z = self.assign_nearest_centroid()
-        #print(z)
+        
         self.create_clusters(z)    
         self.previous_centroids = self.centroids.copy()
         self.update_centroids()
         
-    def display_clusters(self):
-        for cluster in self.clusters:
-            print(cluster.x)
-            plt.scatter(cluster.x, cluster.y, color=cluster.couleur, label=cluster.couleur)
-        plt.scatter(self.centroids[:,0], self.centroids[:,1], color='yellow', label='yellow')
-
-        plt.show()
-    
-    def verify_convergence(self):
-        if (np.array(self.centroids) - np.array(self.previous_centroids)).all() < 1e-5:
-            return True
-        else:
-            return False
-    
-    def fit(self, nb_iter=10):
-        
+    def verify_convergence(self) -> bool:
+        return (np.array(self.centroids) - np.array(self.previous_centroids)).all() < 1e-5
+            
+    def fit(self, nb_iter=10) -> None:
         for i in range(nb_iter):
             self.step()
             #self.display_clusters()
             if self.verify_convergence():
                 break
     
-    def predict(self, point):
+    def predict(self, point) -> int:
         return self.get_nearest_centroid(point)
     
-    def get_nouvelle_couleur_du_point(self, point):
+    def get_nouvelle_couleur_du_point(self, point) -> np.ndarray:
+        """transforme un point (qui doit exister dans l'ensemble de train) en 
+
+        Args:
+            point (_type_): les coordonnées RGB du point de départ
+
+        Returns:
+            np.ndarray: les nouvelles coordonnées RGB du point
+        """
         for c in self.clusters:
-            for p in c.data: #.tolist():
+            for p in c.data: 
                 if np.array_equal(p, point):
                     return c.centroid 
