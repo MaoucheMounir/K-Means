@@ -60,7 +60,7 @@ class KMeans():
         groupes = df.groupby('cluster')
 
         self.clusters = [Cluster(df_groupe.iloc[:,0], indice_cluster) for indice_cluster, df_groupe in groupes]
-        
+    
     def update_centroids(self,) -> None: #Le calcul du barycentre se fait automatiquement lors de la creation des clusters
         self.centroids = np.array([cluster.centroid for cluster in self.clusters])
 
@@ -70,10 +70,10 @@ class KMeans():
         self.create_clusters(z)    
         self.previous_centroids = self.centroids.copy()
         self.update_centroids()
-        
+    
     def verify_convergence(self) -> bool:
         return (np.array(self.centroids) - np.array(self.previous_centroids)).all() < 1e-5
-            
+    
     def fit(self, nb_iter=10) -> None:
         for i in range(nb_iter):
             self.step()
@@ -84,12 +84,10 @@ class KMeans():
     def predict(self, point) -> int:
         return self.get_nearest_centroid(point)
     
-    def get_nouvelle_couleur_du_point(self, point) -> np.ndarray:
+    def transform(self, point:np.ndarray) -> np.ndarray:
         """transforme un point (qui doit exister dans l'ensemble de train) en 
-
         Args:
-            point (_type_): les coordonnées RGB du point de départ
-
+            point (np.ndarray): les coordonnées RGB du point de départ
         Returns:
             np.ndarray: les nouvelles coordonnées RGB du point
         """
