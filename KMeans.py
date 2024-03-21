@@ -84,8 +84,9 @@ class KMeans():
     def predict(self, point) -> int:
         return self.get_nearest_centroid(point)
     
-    def transform(self, point:np.ndarray) -> np.ndarray:
-        """transforme un point (qui doit exister dans l'ensemble de train) en 
+    def transform_pixel(self, point:np.ndarray) -> np.ndarray:
+        """transforme un point (qui doit exister dans l'ensemble de train)
+            vers sa couleur compressée
         Args:
             point (np.ndarray): les coordonnées RGB du point de départ
         Returns:
