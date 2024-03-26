@@ -4,9 +4,7 @@ import pandas as pd
 class Cluster():
     
     def __init__(self, data:np.ndarray, id_cluster:pd.Series):
-        self.data = data
-        
-        #self.x, self.y = data.iloc[:,0], data.iloc[:,1]
+        self.data:np.ndarray = data
         self.centroid:np.ndarray = self.calculer_barycentre()
         self.id_cluster:int = id_cluster
 
