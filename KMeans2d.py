@@ -33,6 +33,4 @@ class KMeans2d(KMeans):
             if self.verify_convergence():
                 break
     
- 
 
-            

@@ -2,7 +2,7 @@ import random as rd
 import numpy as np
 import pandas as pd
 
-from src.Cluster import Cluster
+from Cluster import Cluster
 
 class KMeans():
     def __init__(self, K:int, data:np.ndarray):
@@ -64,14 +64,21 @@ class KMeans():
     def update_centroids(self,) -> None: #Le calcul du barycentre se fait automatiquement lors de la creation des clusters
         self.centroids = np.array([cluster.centroid for cluster in self.clusters])
 
+
     def step(self,) -> None:
         self.previous_centroids = self.centroids.copy() 
         self.update_centroids()   
         z = self.assign_nearest_centroid()
         self.create_clusters(z)    
-        
+    
     def verify_convergence(self) -> bool:
         return (np.array(self.centroids) - np.array(self.previous_centroids)).all() < 1e-5
+    
+    def fit(self, nb_iter=10) -> None:
+        for _ in range(nb_iter):
+            self.step()
+            if self.verify_convergence():
+                break
     
     
     def predict(self, point):
@@ -89,7 +96,6 @@ class KMeans():
             for p in c.data: 
                 if np.array_equal(p, point):
                     return c.centroid 
-                
     
     def inertie_normalisee(self) -> float:
         """moyenne des distances intra-clusters
@@ -103,11 +109,5 @@ class KMeans():
         
         return np.mean(distances)
         
-    def fit(self, nb_iter=10) -> None:
-        for _ in range(nb_iter):
-            self.step()
-            if self.verify_convergence():
-                break
-            
     
     
