@@ -1,5 +1,5 @@
 from sklearn.datasets import make_blobs
-from KMeans2d import KMeans2d as KMeans
+from src.KMeans2d import KMeans2d as KMeans
 
 
 K = 3

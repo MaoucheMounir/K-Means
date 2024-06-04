@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from KMeans import *
+from src.KMeans import *
 
 class KMeans2d(KMeans):
     def __init__(self, K:int, data:np.ndarray):

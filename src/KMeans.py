@@ -2,7 +2,7 @@ import random as rd
 import numpy as np
 import pandas as pd
 
-from Cluster import Cluster
+from src.Cluster import Cluster
 
 class KMeans():
     def __init__(self, K:int, data:np.ndarray):
